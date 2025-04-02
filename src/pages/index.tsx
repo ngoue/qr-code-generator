@@ -5,7 +5,7 @@ import QRCode from "qrcode";
 import { useState } from "react";
 
 export default function Home() {
-  const [url, setUrl] = useState("https://google.com");
+  const [url, setUrl] = useState("");
   const [dataUrl, setDataUrl] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
