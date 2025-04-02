@@ -1,30 +1,27 @@
 "use client";
 
-import qrcode from "qrcode";
-import clsx from "clsx";
-import { useRef, useState } from "react";
+import QRCode from "qrcode";
+import { useState } from "react";
 
 export default function Home() {
-  const [url, setUrl] = useState("");
-  const [show, setShow] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [url, setUrl] = useState("https://google.com");
+  const [dataUrl, setDataUrl] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    qrcode.toCanvas(canvasRef.current, url, {}, (error) => {
-      if (error) {
-        console.error("Error generating QR code:", error);
-      } else {
-        setShow(true);
-      }
-    });
+
+    try {
+      const data = await QRCode.toDataURL(url, { scale: 8 });
+      setDataUrl(data);
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+    }
   };
 
   const handleDownload = () => {
-    if (!canvasRef.current) return;
-    const image = canvasRef.current.toDataURL("image/png");
+    if (!dataUrl) return;
     const link = document.createElement("a");
-    link.href = image;
+    link.href = dataUrl;
     link.download = "qrcode.png";
     document.body.appendChild(link);
     link.click();
@@ -32,41 +29,16 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setShow(false);
-    canvasRef.current
-      ?.getContext("2d")
-      ?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    setUrl("");
+    setDataUrl("");
   };
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
-        <div className={clsx("w-full", show ? "hidden" : "block")}>
-          <form onSubmit={handleSubmit} className="w-full">
-            <div className="flex flex-col justify-center items-center gap-4 w-full">
-              <h1 className="italic">For Austin</h1>
-              <input
-                type="url"
-                placeholder="https://example.com"
-                className="w-full border border-gray-900 dark:border-gray-300 rounded-sm p-2 w-full max-w-[400px] focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-              <div className="flex justify-center items-center mb-4">
-                <button
-                  type="submit"
-                  className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
-                  disabled={!url}
-                >
-                  Generate QR Code
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div className={clsx(show ? "block" : "hidden")}>
-          <div className={`flex flex-col justify-center items-center gap-4`}>
-            <canvas ref={canvasRef} id="qrcode" />
+        {dataUrl ? (
+          <div className="flex flex-col justify-center items-center gap-4 w-full">
+            <img id="qrcode" src={dataUrl} className="size-40" />
             <div className="flex justify-center items-center gap-4">
               <button
                 type="button"
@@ -84,7 +56,29 @@ export default function Home() {
               </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="flex flex-col justify-center items-center gap-4 w-full">
+              <h1 className="italic">For Austin</h1>
+              <input
+                type="text"
+                placeholder="https://example.com"
+                className="w-full border border-gray-900 dark:border-gray-300 rounded-sm p-2 w-full max-w-[400px] focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <div className="flex justify-center items-center mb-4">
+                <button
+                  type="submit"
+                  className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 cursor-pointer"
+                  disabled={!url}
+                >
+                  Generate QR Code
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </main>
     </div>
   );
