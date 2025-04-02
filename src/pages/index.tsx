@@ -40,15 +40,15 @@ export default function Home() {
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <div className={clsx(show ? "hidden" : "block")}>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-4">
+      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+        <div className={clsx("w-full", show ? "hidden" : "block")}>
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="flex flex-col justify-center items-center gap-4 w-full">
               <h1 className="italic">For Austin</h1>
               <input
                 type="url"
                 placeholder="https://example.com"
-                className="min-w-md border border-gray-900 dark:border-gray-300 rounded-sm p-2 w-full max-w-[400px] focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                className="w-full border border-gray-900 dark:border-gray-300 rounded-sm p-2 w-full max-w-[400px] focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
