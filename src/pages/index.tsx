@@ -43,7 +43,7 @@ export default function Home() {
         <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
           {dataUrl ? (
             <div className="flex flex-col justify-center items-center gap-4 w-full">
-              <img id="qrcode" src={dataUrl} className="size-40" />
+              <img id="qrcode" src={dataUrl} />
               <div className="flex justify-center items-center gap-4">
                 <button
                   type="button"
